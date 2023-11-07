@@ -1,0 +1,77 @@
+Ml practical 1
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data=pd.read_csv(r"C:\Users\Abhijit\OneDrive\Desktop\test jupyter\temperatures.csv")
+
+data.describe()
+
+data.head()
+
+data.tail()
+
+type(data)
+
+data.shape
+
+data.info()
+
+data.isnull().sum()
+
+x = data['YEAR'].values.reshape(-1, 1)
+y = data['ANNUAL'].values.reshape(-1, 1)
+
+print(x.shape)
+print(y.shape)
+
+type(x)
+
+type(y)
+
+plt.title("Temperature Plot of INDIA")
+plt.xlabel("YEAR")
+plt.ylabel("ANNUAL Average Temperature")
+plt.plot(x,y,'o')
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3,random_state=0)
+
+print(x_train.shape)
+print(y_train.shape)
+print(x_test.shape)
+print(x_test.shape)
+
+model = LinearRegression()
+model.fit(x_train, y_train)
+
+model.coef_
+
+model.intercept_
+
+predictions = model.predict(x_test)
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+# Calculate metrics
+mse = mean_squared_error(y_test, predictions)
+mae = mean_absolute_error(y_test, predictions)
+r2 = r2_score(y_test, predictions)
+
+print("Mean Squared Error (MSE):", mse)
+print(f"Mean Absolute Error (MAE):", mae)
+print("R-Square:", r2)
+
+plt.scatter(x_test, y_test, color='blue', label='Actual Temperatures')
+plt.plot(x_test, predictions, color='red', linewidth=2, label='Regression Line')
+plt.xlabel('YEAR')
+plt.ylabel('ANNUAL Avearge Temperature (Celsius)')
+plt.title('Simple Linear Regression: Year-Wise Temperature Prediction')
+plt.legend()
+plt.show()
+
+model.predict([[2050]])
+
+

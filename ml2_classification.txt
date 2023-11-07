@@ -1,0 +1,53 @@
+ml practical 2
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report, ConfusionMatrixDisplay
+
+data=pd.read_csv(r"C:\Users\Abhijit\OneDrive\Desktop\test jupyter\Admission_Predict.csv")
+
+data.columns
+
+data.shape
+
+data.head()
+
+x=data.drop('Chance of Admit ', axis=1)
+y=data['Chance of Admit '].values.reshape(-1,1)
+
+x.head()
+
+print(y[1:10])
+
+from sklearn.preprocessing import Binarizer
+Bin=Binarizer(threshold=0.75)
+y=Bin.fit_transform(y)
+y=y.astype('int')
+print(y[1:10])
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1)
+
+print(x_train.shape)
+print(y_train.shape)
+print(x_test.shape)
+print(y_test.shape)
+
+classifier = DecisionTreeClassifier(random_state=42)
+
+classifier.fit(x_train, y_train)
+
+predictions = classifier.predict(x_test)
+
+accuracy = accuracy_score(y_test, predictions)
+report = classification_report(y_test, predictions)
+# Print accuracy and classification report
+print("Accuracy:", accuracy)
+print("Classification Report:")
+print(report)
+
+ConfusionMatrixDisplay.from_predictions(y_test,predictions)
+
+new_entry=([[1,382,110,3,3,2.5,8.7,1]])
+classifier.predict(new_entry)[0]

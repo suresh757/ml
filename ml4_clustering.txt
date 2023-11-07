@@ -1,0 +1,89 @@
+ml practical 4
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv(r"C:\Users\Abhijit\OneDrive\Desktop\xyz\Mall_Customers.csv")
+
+x = df.iloc[:,3:]
+
+x
+
+plt.title('Unclustered Data')
+sns.scatterplot(x=x['Annual Income (k$)'],y=x['Spending Score (1-100)'])
+
+from sklearn.cluster import KMeans, AgglomerativeClustering
+km = KMeans(n_clusters=4)
+
+km.fit_predict(x)
+
+km.inertia_
+
+sse =[]
+for k in range(1,16):
+ km = KMeans(n_clusters=k)
+ km.fit_predict(x)
+ sse.append(km.inertia_)
+
+sse
+
+plt.title('Elbow Method')
+plt.xlabel('Cluster')
+plt.ylabel('SSE')
+plt.grid()
+plt.xticks(range(1,16))
+plt.plot(range(1,16),sse,marker='.',color='red')
+
+km=KMeans(n_clusters=5, random_state=0)
+
+labels=km.fit_predict(x)
+
+
+labels
+
+cent = km.cluster_centers_
+cent
+
+plt.figure(figsize=(16,9))
+plt.subplot(1,2,1)
+plt.title('Unclustered Data')
+plt.xlabel('Annual income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'],x['Spending Score (1-100)'])
+plt.subplot(1,2,2)
+plt.title('clustered Data')
+plt.xlabel('Annual income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'],x['Spending Score (1-100)'], c=labels)
+plt.scatter(cent[:,0],cent[:,1],s=100,color='k')
+
+km.predict([[50,60]])
+
+km.labels_
+
+df[labels==4]
+
+agl = AgglomerativeClustering(n_clusters=5)
+
+alabels = agl.fit_predict(x)
+
+alabels
+
+plt.figure(figsize=(16,9))
+plt.subplot(1,2,1)
+plt.title('Agglomerative')
+plt.xlabel('Annual income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'],x['Spending Score (1-100)'],
+ c=alabels)
+plt.subplot(1,2,2)
+plt.title('Kmeans')
+plt.xlabel('Annual income')
+plt.ylabel('Spending Score')
+plt.scatter(x['Annual Income (k$)'],x['Spending Score (1-100)'],
+ c=labels)
+plt.scatter(cent[:,0],cent[:,1],s=100,color='k')
+
+

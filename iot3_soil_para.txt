@@ -1,0 +1,60 @@
+#define BLYNK_TEMPLATE_ID "TMPL30E1ONYKH"
+#define BLYNK_TEMPLATE_NAME "Soil Moisture"
+#define BLYNK_AUTH_TOKEN "RugC9jKykwMORBB617UTTjbIxWdAQ8vv"
+
+#define BLYNK_PRINT Serial
+#define AOUT_PIN 33
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+char ssid[] = "201";
+char pass[] = "12345678201";
+
+BlynkTimer timer;
+
+const int AirValue = 3300;   
+const int WaterValue = 2800;  
+int soilMoistureValue = 0;
+int soilmoisturepercent=0;
+
+
+void sendSensor()
+{
+    soilMoistureValue = analogRead(AOUT_PIN);
+    Serial.print("Moisture Value :  ");
+    Serial.println(soilMoistureValue);
+    Serial.print("\n");
+    soilmoisturepercent = map(soilMoistureValue, AirValue, WaterValue, 0, 100);
+    if(soilmoisturepercent >= 100)
+    {
+       Serial.println("100 %");
+    }
+    else if(soilmoisturepercent <=0)
+    {
+       Serial.println("0 %");
+    }
+    else if(soilmoisturepercent >0 && soilmoisturepercent < 100)
+    {
+        Serial.print(soilmoisturepercent);
+        Serial.println("%");
+      
+    }
+    Blynk.virtualWrite(V1, soilMoistureValue);
+    Blynk.virtualWrite(V2, soilmoisturepercent);
+  }
+
+  void setup()
+  {
+      Serial.begin(115200);
+      Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+      timer.setInterval(1000L, sendSensor);
+  }
+
+void loop()
+  {
+    Blynk.run();
+    timer.run();
+  }
+
